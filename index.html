@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Quieres ser mi novia? 💖</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --text: #ffffff;
+      --yes: #ff4fa3;
+      --yes-hover: #ff68b1;
+      --no: #6d6d6d;
+      --no-hover: #7c7c7c;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      position: relative;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 3;
+      max-width: 680px;
+      width: min(90vw, 680px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      text-wrap: balance;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .buttons-wrap {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      min-height: 70px;
+      position: relative;
+    }
+
+    button {
+      border: none;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer;
+      padding: 12px 26px;
+      transition: transform 180ms ease, background-color 180ms ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      touch-action: manipulation;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    #yesBtn {
+      background: var(--yes);
+      transform-origin: center;
+    }
+
+    #yesBtn:hover,
+    #yesBtn:focus-visible {
+      background: var(--yes-hover);
+      transform: scale(1.04);
+    }
+
+    #noBtn {
+      background: var(--no);
+      position: absolute;
+      left: 50%;
+      transform: translateX(6.2rem);
+      transition: left 160ms ease, top 160ms ease, transform 120ms ease, background-color 180ms ease;
+    }
+
+    #noBtn:hover,
+    #noBtn:focus-visible {
+      background: var(--no-hover);
+    }
+
+    .floating {
+      position: absolute;
+      top: -10vh;
+      will-change: transform, opacity;
+      pointer-events: none;
+      z-index: 1;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25));
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(0, -10vh, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(var(--drift, 0px), 115vh, 0) rotate(360deg);
+        opacity: 0.95;
+      }
+    }
+
+    .counter {
+      position: absolute;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+      opacity: 0.95;
+      pointer-events: none;
+      text-wrap: balance;
+    }
+
+    .yes-screen {
+      display: grid;
+      place-items: center;
+      width: 100vw;
+      height: 100vh;
+      padding: 24px;
+      text-align: center;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      line-height: 1.2;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContent">
+    <h1>¿Quieres ser mi novia? 💖</h1>
+    <div class="buttons-wrap" id="buttonsWrap">
+      <button id="yesBtn" aria-label="Sí">Sí 💕</button>
+      <button id="noBtn" aria-label="No">No 😢</button>
+    </div>
+  </div>
+
+  <div class="counter" id="counter">Intentos de decir que no: 0 😏</div>
+
+  <script>
+    (() => {
+      const EMOJIS = ["❤️", "🌸", "🌹", "💐"];
+      const body = document.body;
+      const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+      const counter = document.getElementById("counter");
+      const buttonsWrap = document.getElementById("buttonsWrap");
+
+      let noAttempts = 0;
+      let yesScale = 1;
+      let emojiTimer = null;
+
+      const rand = (min, max) => Math.random() * (max - min) + min;
+      const randInt = (min, max) => Math.floor(rand(min, max + 1));
+
+      const updateCounter = () => {
+        counter.textContent = `Intentos de decir que no: ${noAttempts} 😏`;
+      };
+
+      const growYes = () => {
+        yesScale = Math.min(1.45, yesScale + 0.05);
+        yesBtn.style.transform = `scale(${yesScale})`;
+      };
+
+      const moveNoButton = () => {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        const btnRect = noBtn.getBoundingClientRect();
+        const maxX = Math.max(8, vw - btnRect.width - 8);
+        const maxY = Math.max(8, vh - btnRect.height - 8);
+
+        const x = randInt(8, maxX);
+        const y = randInt(8, maxY);
+
+        noBtn.style.left = `${x}px`;
+        noBtn.style.top = `${y}px`;
+        noBtn.style.transform = "translateX(0)";
+      };
+
+      const registerNoAttempt = () => {
+        noAttempts += 1;
+        updateCounter();
+        growYes();
+        moveNoButton();
+      };
+
+      const createFloatingEmoji = () => {
+        const emoji = document.createElement("span");
+        emoji.className = "floating";
+        emoji.textContent = EMOJIS[randInt(0, EMOJIS.length - 1)];
+
+        const size = rand(20, 52);
+        const left = rand(0, 100);
+        const duration = rand(5.5, 12);
+        const delay = rand(0, 0.45);
+        const drift = `${rand(-90, 90).toFixed(2)}px`;
+
+        emoji.style.left = `${left}vw`;
+        emoji.style.fontSize = `${size}px`;
+        emoji.style.animationDuration = `${duration}s`;
+        emoji.style.animationDelay = `${delay}s`;
+        emoji.style.setProperty("--drift", drift);
+
+        body.appendChild(emoji);
+
+        const removeAfter = (duration + delay + 0.3) * 1000;
+        setTimeout(() => emoji.remove(), removeAfter);
+      };
+
+      const startEmojiRain = () => {
+        for (let i = 0; i < 10; i += 1) {
+          setTimeout(createFloatingEmoji, i * 170);
+        }
+
+        emojiTimer = window.setInterval(() => {
+          createFloatingEmoji();
+          if (Math.random() > 0.62) createFloatingEmoji();
+        }, 260);
+      };
+
+      const showYesScreen = () => {
+        if (emojiTimer) window.clearInterval(emojiTimer);
+        body.innerHTML = `<div class="yes-screen">Sabía que dirías que sí 💖🥰</div>`;
+      };
+
+      // Desktop hover / pointer approach attempts
+      noBtn.addEventListener("mouseenter", registerNoAttempt);
+      noBtn.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        registerNoAttempt();
+      });
+
+      // Mobile touch attempts
+      noBtn.addEventListener("touchstart", (event) => {
+        event.preventDefault();
+        registerNoAttempt();
+      }, { passive: false });
+
+      yesBtn.addEventListener("click", showYesScreen);
+
+      // Keep button inside viewport on orientation/resize changes
+      window.addEventListener("resize", () => {
+        if (noAttempts > 0) moveNoButton();
+      });
+
+      // keep initial placement aligned with button group
+      requestAnimationFrame(() => {
+        const wrapRect = buttonsWrap.getBoundingClientRect();
+        const noRect = noBtn.getBoundingClientRect();
+
+        if (wrapRect.width && noRect.width) {
+          noBtn.style.left = `${wrapRect.left + wrapRect.width / 2 + 8}px`;
+          noBtn.style.top = `${wrapRect.top + (wrapRect.height - noRect.height) / 2}px`;
+          noBtn.style.transform = "translateX(0)";
+        }
+      });
+
+      startEmojiRain();
+    })();
+  </script>
+</body>
+</html>
