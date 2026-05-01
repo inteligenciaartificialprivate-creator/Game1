@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gran Depresión y Crisis del Petróleo de 1973</title>
+  <style>
+    :root {
+      --bg: #05070f;
+      --fg: #ecf1ff;
+      --accent: #7dd3fc;
+      --accent2: #f59e0b;
+      --muted: #94a3b8;
+      --card: rgba(17, 25, 40, 0.65);
+      --glass: blur(18px);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at 20% 20%, #172554, #020617 65%);
+      color: var(--fg);
+      overflow: hidden;
+    }
+
+    #bg3d {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      perspective: 1000px;
+      z-index: 0;
+    }
+
+    .orb {
+      position: absolute;
+      width: 40vmax;
+      height: 40vmax;
+      border-radius: 50%;
+      filter: blur(24px);
+      opacity: 0.35;
+      transform-style: preserve-3d;
+      animation: float 18s ease-in-out infinite;
+    }
+
+    .orb.a { background: conic-gradient(from 60deg, #0ea5e9, #7c3aed, #0ea5e9); top: -15vmax; left: -10vmax; }
+    .orb.b { background: conic-gradient(from 160deg, #f59e0b, #ef4444, #f59e0b); right: -15vmax; bottom: -10vmax; animation-delay: -6s; }
+    .orb.c { background: conic-gradient(from 260deg, #14b8a6, #22d3ee, #14b8a6); left: 30%; bottom: -20vmax; animation-delay: -12s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0,0,0) rotateX(0deg) rotateY(0deg); }
+      50% { transform: translate3d(0,-4vmax,8vmax) rotateX(12deg) rotateY(-16deg); }
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+    }
+
+    nav {
+      backdrop-filter: var(--glass);
+      background: linear-gradient(180deg, rgba(15, 23, 42, .78), rgba(2, 6, 23, .6));
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    nav h1 {
+      margin: 0.4rem 0 0.9rem;
+      font-size: 1.05rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .menu-btn {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(125, 211, 252, 0.2);
+      background: rgba(15, 23, 42, 0.45);
+      color: var(--fg);
+      border-radius: 12px;
+      padding: 0.7rem 0.85rem;
+      cursor: pointer;
+      transition: transform .35s, background .35s, border-color .35s;
+    }
+
+    .menu-btn:hover, .menu-btn.active {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(125, 211, 252, 0.7);
+      transform: translateX(6px) scale(1.02);
+    }
+
+    .hint { margin-top: auto; color: var(--muted); font-size: .85rem; line-height: 1.35; }
+
+    main {
+      position: relative;
+      perspective: 1500px;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 5%;
+      border-radius: 24px;
+      padding: clamp(1rem, 2vw, 2rem);
+      background: var(--card);
+      backdrop-filter: var(--glass);
+      border: 1px solid rgba(125, 211, 252, 0.2);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateX(12%) scale(.9) rotateY(-18deg);
+      transition: opacity .9s ease, transform 1.1s cubic-bezier(.2,.8,.2,1);
+      pointer-events: none;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 1rem;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1) rotateY(0deg);
+      pointer-events: auto;
+    }
+
+    .slide.exit-left {
+      opacity: 0;
+      transform: translateX(-20%) scale(.86) rotateY(20deg);
+    }
+
+    .kicker {
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 700;
+      font-size: .8rem;
+    }
+
+    h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 2.5rem); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 16px;
+      padding: .9rem;
+      transform: translateZ(0);
+      transition: transform .45s ease, border-color .45s;
+    }
+
+    .card:hover { transform: translateY(-6px) rotateX(3deg); border-color: rgba(125, 211, 252, .8); }
+    .timeline { display: flex; gap: .6rem; flex-wrap: wrap; }
+    .pill {
+      background: rgba(2, 132, 199, .18);
+      color: #e0f2fe;
+      border: 1px solid rgba(125,211,252,.4);
+      border-radius: 999px;
+      padding: .35rem .65rem;
+      font-size: .84rem;
+    }
+
+    .controls {
+      position: absolute;
+      right: 2rem;
+      bottom: 1.2rem;
+      display: flex;
+      gap: .6rem;
+      z-index: 3;
+    }
+
+    .controls button {
+      border: 1px solid rgba(148, 163, 184, .4);
+      background: rgba(15, 23, 42, .65);
+      color: var(--fg);
+      border-radius: 10px;
+      padding: .55rem .8rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      #app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      nav { flex-direction: row; flex-wrap: wrap; border-right: none; border-bottom: 1px solid rgba(148,163,184,.25); }
+      .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="bg3d">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+  </div>
+
+  <div id="app">
+    <nav>
+      <h1>Historia Económica Visual</h1>
+      <button class="menu-btn" data-slide="0">Portada</button>
+      <button class="menu-btn" data-slide="1">Gran Depresión: Contexto</button>
+      <button class="menu-btn" data-slide="2">Gran Depresión: Causas</button>
+      <button class="menu-btn" data-slide="3">Gran Depresión: Repercusiones</button>
+      <button class="menu-btn" data-slide="4">Gran Depresión: Soluciones</button>
+      <button class="menu-btn" data-slide="5">Crisis del Petróleo 1973: Contexto</button>
+      <button class="menu-btn" data-slide="6">Crisis del Petróleo 1973: Causas</button>
+      <button class="menu-btn" data-slide="7">Crisis del Petróleo 1973: Repercusiones</button>
+      <button class="menu-btn" data-slide="8">Crisis del Petróleo 1973: Soluciones</button>
+      <button class="menu-btn" data-slide="9">Comparación y Lecciones</button>
+      <p class="hint">Usa el menú, flechas del teclado o botones de navegación. Movimiento de mouse activa efecto parallax “cinematográfico”.</p>
+    </nav>
+
+    <main id="deck"></main>
+  </div>
+
+  <div class="controls">
+    <button id="prev">◀ Anterior</button>
+    <button id="next">Siguiente ▶</button>
+  </div>
+
+  <script>
+    const slidesData = [
+      {
+        kicker: "Presentación inmersiva",
+        title: "Gran Depresión (1929) y Crisis del Petróleo (1973)",
+        blocks: [
+          "Un recorrido dinámico por dos crisis que transformaron la economía mundial.",
+          "Enfoque: contexto histórico, causas, repercusiones y respuestas políticas.",
+          "Diseño visual con transiciones tipo morph, paneles interactivos y atmósfera 3D."
+        ]
+      },
+      {
+        kicker: "1920s - 1930s",
+        title: "Gran Depresión: Contexto histórico",
+        blocks: [
+          "Tras la Primera Guerra Mundial, EE. UU. emergió como potencia financiera global.",
+          "Los años 20 vivieron euforia bursátil, expansión del crédito y sobreproducción industrial.",
+          "La desigualdad y fragilidad bancaria ocultaban una base económica inestable."
+        ]
+      },
+      {
+        kicker: "Factores detonantes",
+        title: "Gran Depresión: Causas",
+        blocks: [
+          "Especulación financiera extrema y compra de acciones con deuda (margen).",
+          "Caída de la demanda y acumulación de inventarios agrícolas e industriales.",
+          "Debilidad del sistema bancario y políticas monetarias contractivas."
+        ]
+      },
+      {
+        kicker: "Impacto global",
+        title: "Gran Depresión: Repercusiones",
+        blocks: [
+          "Desempleo masivo, quiebras bancarias y caída del comercio internacional.",
+          "Pobreza urbana y rural; migraciones internas y tensiones sociales.",
+          "Crisis política: auge de movimientos extremistas en varias regiones."
+        ]
+      },
+      {
+        kicker: "Respuesta pública",
+        title: "Gran Depresión: Soluciones aplicadas",
+        blocks: [
+          "New Deal en EE. UU.: inversión pública, empleo, regulación financiera y seguridad social.",
+          "Abandono del patrón oro en varios países para recuperar margen monetario.",
+          "Fortalecimiento del papel del Estado y reformas de supervisión bancaria."
+        ]
+      },
+      {
+        kicker: "Años 70",
+        title: "Crisis del Petróleo 1973: Contexto histórico",
+        blocks: [
+          "Economías industrializadas altamente dependientes del petróleo barato.",
+          "Guerra de Yom Kippur (octubre 1973) y tensiones geopolíticas en Medio Oriente.",
+          "La OPEP ganó mayor capacidad para coordinar precios y oferta."
+        ]
+      },
+      {
+        kicker: "Choque de oferta",
+        title: "Crisis del Petróleo 1973: Causas",
+        blocks: [
+          "Embargo petrolero de países árabes a naciones que apoyaron a Israel.",
+          "Recortes de producción que redujeron oferta global y dispararon precios.",
+          "Dependencia energética sin alternativas rápidas en transporte e industria."
+        ]
+      },
+      {
+        kicker: "Estanflación",
+        title: "Crisis del Petróleo 1973: Repercusiones",
+        blocks: [
+          "Inflación elevada junto con bajo crecimiento económico.",
+          "Aumento de costos de producción, desempleo y presión sobre balanzas comerciales.",
+          "Cambio de paradigmas macroeconómicos: límites del modelo keynesiano clásico en ese contexto."
+        ]
+      },
+      {
+        kicker: "Adaptación estratégica",
+        title: "Crisis del Petróleo 1973: Soluciones aplicadas",
+        blocks: [
+          "Políticas de ahorro energético (límites de velocidad, eficiencia industrial).",
+          "Diversificación de matriz energética: nuclear, gas, carbón y renovables incipientes.",
+          "Creación de reservas estratégicas y coordinación internacional (AIE)."
+        ]
+      },
+      {
+        kicker: "Síntesis",
+        title: "Comparación y lecciones históricas",
+        blocks: [
+          "La Gran Depresión fue crisis de demanda y sistema financiero; 1973, crisis de oferta energética.",
+          "Ambas mostraron que choques económicos exigen respuesta estatal e internacional coordinada.",
+          "Lección actual: resiliencia requiere regulación, diversificación y planificación de largo plazo."
+        ]
+      }
+    ];
+
+    const deck = document.getElementById('deck');
+    const buttons = [...document.querySelectorAll('.menu-btn')];
+    let current = 0;
+
+    function createSlides() {
+      slidesData.forEach((s, i) => {
+        const slide = document.createElement('section');
+        slide.className = 'slide';
+        slide.dataset.index = i;
+
+        const blocks = s.blocks.map(t => `<article class="card">${t}</article>`).join('');
+        slide.innerHTML = `
+          <div class="kicker">${s.kicker}</div>
+          <h2>${s.title}</h2>
+          <div class="grid">${blocks}</div>
+          <div class="timeline">
+            <span class="pill">Slide ${i + 1} / ${slidesData.length}</span>
+            <span class="pill">Modo visual dinámico</span>
+          </div>`;
+        deck.appendChild(slide);
+      });
+    }
+
+    function showSlide(nextIndex) {
+      if (nextIndex < 0 || nextIndex >= slidesData.length || nextIndex === current) return;
+      const prev = deck.querySelector(`.slide[data-index="${current}"]`);
+      const next = deck.querySelector(`.slide[data-index="${nextIndex}"]`);
+
+      if (prev) {
+        prev.classList.remove('active');
+        prev.classList.add('exit-left');
+        setTimeout(() => prev.classList.remove('exit-left'), 350);
+      }
+
+      next.classList.add('active');
+      current = nextIndex;
+      buttons.forEach(b => b.classList.toggle('active', Number(b.dataset.slide) === current));
+    }
+
+    createSlides();
+    deck.querySelector('.slide[data-index="0"]').classList.add('active');
+    buttons[0].classList.add('active');
+
+    buttons.forEach(btn => btn.addEventListener('click', () => showSlide(Number(btn.dataset.slide))));
+    document.getElementById('next').addEventListener('click', () => showSlide(Math.min(current + 1, slidesData.length - 1)));
+    document.getElementById('prev').addEventListener('click', () => showSlide(Math.max(current - 1, 0)));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') showSlide(Math.min(current + 1, slidesData.length - 1));
+      if (e.key === 'ArrowLeft') showSlide(Math.max(current - 1, 0));
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 18;
+      const y = (e.clientY / window.innerHeight - 0.5) * 18;
+      const active = deck.querySelector('.slide.active');
+      if (active) active.style.transform = `translateX(0) scale(1) rotateY(${x * 0.35}deg) rotateX(${-y * 0.25}deg)`;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      const active = deck.querySelector('.slide.active');
+      if (active) active.style.transform = 'translateX(0) scale(1) rotateY(0deg)';
+    });
+  </script>
+</body>
+</html>
